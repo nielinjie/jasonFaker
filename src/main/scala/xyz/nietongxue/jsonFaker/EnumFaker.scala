@@ -14,10 +14,10 @@ import scala.collection.JavaConversions._
   * Created by nielinjie on 9/1/16.
   */
 trait EnumFaker {
+  self:AFaker=>
   implicit class EnumFaker(es:EnumSchema){
     implicit val formats: Formats =
       DefaultFormats
-    val faker = new Faker()
     def fake(hits:Hints): JValue = {
       val values: util.Set[AnyRef] = es.getPossibleValues
       val data = values.toList.get(faker.number().numberBetween(0,values.size))

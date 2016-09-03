@@ -4,7 +4,7 @@
   <artifactId>jasonFaker</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
-  <description>My wonderfull scala app</description>
+  <description>fake json from json-schema or swagger-schema</description>
   <inceptionYear>2015</inceptionYear>
   <licenses>
       <license>
@@ -30,10 +30,18 @@
     </dependency>
 
       <!-- Dependency for JSON Schema validation -->
+      <!-- TODO 用户可以选择jsonSchema或者swagger，运行时不需要同时依赖 -->
       <dependency>
           <groupId>org.everit.json</groupId>
           <artifactId>org.everit.json.schema</artifactId>
           <version>1.2.0</version>
+      </dependency>
+
+
+      <dependency>
+          <groupId>io.swagger</groupId>
+          <artifactId>swagger-core</artifactId>
+          <version>1.5.9</version>
       </dependency>
 
       <dependency>
@@ -59,11 +67,6 @@
           <version>0.11-SNAPSHOT</version>
       </dependency>
 
-      <dependency>
-          <groupId>io.swagger</groupId>
-          <artifactId>swagger-core</artifactId>
-          <version>1.5.9</version>
-      </dependency>
 
 
       <!-- Test -->

@@ -1,6 +1,7 @@
 package xyz.nietongxue.jsonFaker
 
 
+
 import io.swagger.models.properties.{AbstractNumericProperty, DoubleProperty, IntegerProperty, LongProperty}
 import org.everit.json.schema.NumberSchema
 import org.json4s.JsonAST.JValue
@@ -19,13 +20,13 @@ trait NumberFaker {
     val IntegerType, LongType, DoubleType, FloatType = Value
   }
 
-  case class Condition(max: Option[Double], min: Option[Double],
-                       isExclusiveMaximum: Option[Boolean],
-                       isExclusiveMinimum: Option[Boolean], typ: NumberType.NumberType) {
+  case class NumberCondition(max: Option[Double], min: Option[Double],
+                             isExclusiveMaximum: Option[Boolean],
+                             isExclusiveMinimum: Option[Boolean], typ: NumberType.NumberType) {
   }
 
-  implicit def Schema2C(n: NumberSchema): Condition = {
-    Condition(
+  implicit def Schema2C(n: NumberSchema): NumberCondition= {
+    NumberCondition(
       Option[Number](n.getMaximum).map(_.doubleValue()),
       Option[Number](n.getMinimum).map(_.doubleValue()),
       Option(n.isExclusiveMaximum),
@@ -37,8 +38,8 @@ trait NumberFaker {
     )
   }
 
-  implicit def Prop2C(n: AbstractNumericProperty): Condition = {
-    Condition(
+  implicit def Prop2C(n: AbstractNumericProperty): NumberCondition = {
+    NumberCondition(
       Option[Number](n.getMaximum).map(_.doubleValue()),
       Option[Number](n.getMinimum).map(_.doubleValue()),
       Option(n.getExclusiveMaximum),
@@ -53,7 +54,7 @@ trait NumberFaker {
   }
 
 
-  def fake(hints: Hints, c: Condition) = {
+  def fake(hints: Hints, c: NumberCondition) = {
     val MaxNumberOfDecimals: Int = 10
     val max: Double = c.max.getOrElse(hints.maxInt)
     val min: Double = c.min.getOrElse(hints.minInt)

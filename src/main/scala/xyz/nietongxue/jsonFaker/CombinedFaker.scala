@@ -12,9 +12,9 @@ import collection.JavaConversions._
   * Created by nielinjie on 8/31/16.
   */
 trait CombinedFaker {
+  self:AFaker=>
 
   implicit class CombinedFaker(c: CombinedSchema) {
-    val faker = new Faker()
 
     def fake(): JValue = {
       val subSchemas: util.Collection[Schema] = c.getSubschemas
