@@ -141,7 +141,6 @@ class SchemaFakerSpec extends Specification {
     )
     validate(s2, _.values.asInstanceOf[BigInt].intValue(),"enum integer")
   }
-  ""
 
   def validate(schemas: List[JValue], validated: JValue => Any,message:String): Unit = {
     val l: Int = Integer.valueOf(System.getProperty("loop", "1")).intValue()

@@ -1,32 +1,91 @@
 package xyz.nietongxue.jsonFaker
 
-import com.github.javafaker.Faker
+
+import io.swagger.models.properties.{AbstractNumericProperty, DoubleProperty, IntegerProperty, LongProperty}
 import org.everit.json.schema.NumberSchema
 import org.json4s.JsonAST.JValue
 import org.json4s._
+
+import scala.language.implicitConversions
 
 /**
   * Created by nielinjie on 8/30/16.
   */
 trait NumberFaker {
-  implicit class NumberFaker(n:NumberSchema){
-    val faker =new Faker()
+  self: AFaker =>
 
-    val MaxNumberOfDecimals: Int = 10
-    def fake(hints:Hints):JValue={
-      if(n.getMultipleOf!=null) throw new NotImplementedError()
-      val max:Number = Option[Number](n.getMaximum).getOrElse(hints.maxInt)
-      val min:Number = Option[Number](n.getMinimum).getOrElse(hints.minInt)
-      val maxD:Int = if (n.isExclusiveMaximum) max.intValue() else max.intValue()+1
-      val minD:Int = if (n.isExclusiveMinimum) min.intValue()+1 else min.intValue()
+  object NumberType extends Enumeration {
+    type NumberType = Value
+    val IntegerType, LongType, DoubleType, FloatType = Value
+  }
+
+  case class Condition(max: Option[Double], min: Option[Double],
+                       isExclusiveMaximum: Option[Boolean],
+                       isExclusiveMinimum: Option[Boolean], typ: NumberType.NumberType) {
+  }
+
+  implicit def Schema2C(n: NumberSchema): Condition = {
+    Condition(
+      Option[Number](n.getMaximum).map(_.doubleValue()),
+      Option[Number](n.getMinimum).map(_.doubleValue()),
+      Option(n.isExclusiveMaximum),
+      Option(n.isExclusiveMinimum),
       n.requiresInteger() match {
-          //TODO 侧重生成边界情况?
-        case true=> {
-          JInt(faker.number().numberBetween(minD, maxD))
-        }
-        case false=>
-          JDouble(faker.number().randomDouble(MaxNumberOfDecimals,min.intValue(),max.intValue()))
+        case true => NumberType.IntegerType
+        case false => NumberType.DoubleType
       }
+    )
+  }
+
+  implicit def Prop2C(n: AbstractNumericProperty): Condition = {
+    Condition(
+      Option[Number](n.getMaximum).map(_.doubleValue()),
+      Option[Number](n.getMinimum).map(_.doubleValue()),
+      Option(n.getExclusiveMaximum),
+      Option(n.getExclusiveMinimum),
+      n match {
+        case _: IntegerProperty => NumberType.IntegerType
+        case _: LongProperty => NumberType.LongType
+        case _: DoubleProperty => NumberType.DoubleType
+        case _ => NumberType.FloatType
+      }
+    )
+  }
+
+
+  def fake(hints: Hints, c: Condition) = {
+    val MaxNumberOfDecimals: Int = 10
+    val max: Double = c.max.getOrElse(hints.maxInt)
+    val min: Double = c.min.getOrElse(hints.minInt)
+    val maxD: Int = if (c.isExclusiveMaximum.getOrElse(false)) max.intValue() else max.intValue() + 1
+    val minD: Int = if (c.isExclusiveMinimum.getOrElse(false)) min.intValue() + 1 else min.intValue()
+    c.typ match {
+      //TODO 侧重生成边界情况?
+      case NumberType.IntegerType => {
+        JInt(faker.number().numberBetween(minD, maxD))
+      }
+      case NumberType.LongType => {
+        JLong(faker.number().numberBetween(minD, maxD))
+      }
+      case NumberType.DoubleType =>
+        JDouble(faker.number().randomDouble(MaxNumberOfDecimals, min.intValue(), max.intValue()))
+      case NumberType.FloatType =>
+        JDouble(faker.number().randomDouble(MaxNumberOfDecimals, min.intValue(), max.intValue()))
     }
   }
+
+  implicit class NumberF(n: NumberSchema) {
+
+    def fake(hints: Hints): JValue = {
+      if (n.getMultipleOf != null) throw new NotImplementedError()
+      NumberFaker.this.fake(hints, n)
+    }
+  }
+
+  implicit class NumberFakerP(p: AbstractNumericProperty) {
+    def fake(hints: Hints): JValue = {
+      NumberFaker.this.fake(hints, p)
+    }
+  }
+
 }
