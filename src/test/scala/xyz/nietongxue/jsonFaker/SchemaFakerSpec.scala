@@ -1,4 +1,4 @@
-package xyz.nietongxue
+package xyz.nietongxue.jsonFaker
 
 import org.everit.json.schema.loader.SchemaLoader
 import org.everit.json.schema.{NumberSchema, Schema}

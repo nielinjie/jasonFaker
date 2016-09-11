@@ -13,6 +13,9 @@ object JsonFaker {
   def fake(schema: Schema): JsonNode = {
     asJsonNode(fakeJValue(schema))
   }
+  def fake(property: Property):JsonNode={
+    asJsonNode(fakeJValue(property))
+  }
 
   import Fakers._
 
@@ -39,7 +42,8 @@ object JsonFaker {
       case a: ArrayProperty => a.fake(hints)
       case o: ObjectProperty => o.fake()
       case b: BooleanProperty => fakeBoolean
-
+      case da: DateProperty =>
+      //TODO more properties
     }
   }
 }
