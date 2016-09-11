@@ -5,6 +5,7 @@ import io.swagger.models.properties._
 import org.everit.json.schema._
 import org.json4s.JsonAST.{JBool, JNull, JValue}
 import org.json4s.jackson.JsonMethods._
+import xyz.nietongxue.jsonFaker.general.{AFaker, Hints}
 
 /**
   * Created by nielinjie on 8/30/16.
@@ -42,7 +43,7 @@ object JsonFaker {
       case a: ArrayProperty => a.fake(hints)
       case o: ObjectProperty => o.fake()
       case b: BooleanProperty => fakeBoolean
-      case da: DateProperty =>
+//      case da: DateProperty =>
       //TODO more properties
     }
   }

@@ -1,4 +1,4 @@
-package xyz.nietongxue.jsonFaker
+package xyz.nietongxue.jsonFaker.general
 
 /**
   * Created by nielinjie on 9/1/16.

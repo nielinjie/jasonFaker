@@ -3,6 +3,7 @@ package xyz.nietongxue.jsonFaker
 import io.swagger.models.properties.StringProperty
 import org.everit.json.schema.StringSchema
 import org.json4s.JsonAST.{JString, JValue}
+import xyz.nietongxue.jsonFaker.general.{AFaker, Hints}
 
 /**
   * Created by nielinjie on 8/31/16.

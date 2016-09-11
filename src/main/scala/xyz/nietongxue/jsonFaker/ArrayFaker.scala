@@ -4,6 +4,7 @@ import com.github.javafaker.Faker
 import io.swagger.models.properties.{ArrayProperty, Property}
 import org.everit.json.schema.{ArraySchema, Schema}
 import org.json4s.JsonAST.{JArray, JValue}
+import xyz.nietongxue.jsonFaker.general.{AFaker, Hints}
 
 import scala.collection.JavaConversions._
 

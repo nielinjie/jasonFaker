@@ -5,6 +5,7 @@ import java.util
 import com.github.javafaker.Faker
 import org.everit.json.schema.{CombinedSchema, Schema}
 import org.json4s.JsonAST.JValue
+import xyz.nietongxue.jsonFaker.general.AFaker
 
 import collection.JavaConversions._
 

@@ -6,6 +6,7 @@ import com.github.javafaker.Faker
 import org.everit.json.schema.EnumSchema
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import org.json4s.JsonAST.JValue
+import xyz.nietongxue.jsonFaker.general.{AFaker, Hints}
 
 import scala.collection.JavaConversions._
 

@@ -1,4 +1,4 @@
-package xyz.nietongxue.jsonFaker
+package xyz.nietongxue.jsonFaker.general
 
 import com.github.javafaker.Faker
 

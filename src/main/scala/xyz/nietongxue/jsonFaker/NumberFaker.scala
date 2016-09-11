@@ -6,6 +6,7 @@ import io.swagger.models.properties.{AbstractNumericProperty, DoubleProperty, In
 import org.everit.json.schema.NumberSchema
 import org.json4s.JsonAST.JValue
 import org.json4s._
+import xyz.nietongxue.jsonFaker.general.{AFaker, Hints}
 
 import scala.language.implicitConversions
 
