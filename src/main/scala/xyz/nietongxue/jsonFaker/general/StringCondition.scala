@@ -9,8 +9,16 @@ case class StringCondition (pattern: Option[String],
                        maxLength: Option[Int],
                        minLength: Option[Int]) extends Condition with AFaker{
   override def fake(hints: Hints): JValue = {
+
+
+
     //TODO max/min length 如何覆盖或者不覆盖pattern
     //TODO 支持format
+
+
+
+
+
     val pattern: Option[String] = this.pattern.map({ p =>
       if (p.startsWith("^") && p.endsWith("$"))
         p.substring(1, p.length - 1)
