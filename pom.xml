@@ -22,6 +22,13 @@
     <scala.compat.version>2.11</scala.compat.version>
   </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
   <dependencies>
     <dependency>
       <groupId>org.scala-lang</groupId>
@@ -61,12 +68,12 @@
           <artifactId>json4s-jackson_${scala.compat.version}</artifactId>
           <version>3.4.0</version>
       </dependency>
-      <dependency>
-          <groupId>com.github.javafaker</groupId>
-          <artifactId>javafaker</artifactId>
-          <version>0.11-SNAPSHOT</version>
-      </dependency>
 
+      <dependency>
+          <groupId>com.github.nielinjie</groupId>
+          <artifactId>java-faker</artifactId>
+          <version>master-SNAPSHOT</version>
+      </dependency>
 
 
       <!-- Test -->
