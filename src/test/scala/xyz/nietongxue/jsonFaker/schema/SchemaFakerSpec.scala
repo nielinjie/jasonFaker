@@ -1,4 +1,4 @@
-package xyz.nietongxue.jsonFaker
+package xyz.nietongxue.jsonFaker.schema
 
 import org.everit.json.schema.loader.SchemaLoader
 import org.everit.json.schema.{NumberSchema, Schema}
@@ -7,7 +7,7 @@ import org.json4s.JsonDSL._
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import org.specs2.mutable._
-import xyz.nietongxue.jsonFaker.JsonFaker
+import xyz.nietongxue.jsonFaker.general.{Hints, JsonFake}
 
 
 /**
@@ -36,7 +36,9 @@ class SchemaFakerSpec extends Specification {
     }
   }
   "fake" should {
-    val faker = JsonFaker
+    val faker = JsonFake
+    implicit val fakeIt = SchemaFakeIt
+    val hints = Hints()
     "number fake" should {
       "integer fake" should {
         val s1: List[JValue] = List(
@@ -67,7 +69,7 @@ class SchemaFakerSpec extends Specification {
       }
       "multipleOf" in {
         val s = jValueToSchema(("type" -> "integer") ~ ("multipleOf" -> 10))
-        faker.fakeJValue(s) must throwA[NotImplementedError]
+        faker.fake(s,hints) must throwA[NotImplementedError]
       }
     }
 
@@ -144,12 +146,14 @@ class SchemaFakerSpec extends Specification {
 
   def validate(schemas: List[JValue], validated: JValue => Any,message:String): Unit = {
     val l: Int = Integer.valueOf(System.getProperty("loop", "1")).intValue()
-    val faker = JsonFaker
+    val faker = JsonFake
+    implicit val fakeIt = SchemaFakeIt
+    val hints = Hints()
     schemas.map(jValueToSchema).foreach({
       schema =>
         Range(0, l).foreach {
           x =>
-            val jv = faker.fakeJValue(schema)
+            val jv = faker.fake(schema,hints)
             s"validate - $message - ${jv.toString}"  in {
               schema.validate(validated(jv))
               success
