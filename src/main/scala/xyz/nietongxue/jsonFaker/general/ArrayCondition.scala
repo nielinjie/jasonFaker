@@ -1,8 +1,6 @@
 package xyz.nietongxue.jsonFaker.general
 
-import org.everit.json.schema.Schema
 import org.json4s.JsonAST.{JArray, JValue}
-import xyz.nietongxue.jsonFaker.JsonFaker
 import xyz.nietongxue.jsonFaker.schema.SchemaFakeIt
 
 /**
@@ -17,7 +15,7 @@ case class ArrayCondition[SCHEMA: FakeIt](items: Option[List[SCHEMA]],
       case (Some(its), None) => {
         //TODO additionalItem support
         JArray(its.map({
-          s: SCHEMA => JsonFake.fake(s)
+          s: SCHEMA => JsonFake.fake(s,hints)
         }))
       }
 
@@ -27,7 +25,7 @@ case class ArrayCondition[SCHEMA: FakeIt](items: Option[List[SCHEMA]],
         val min: Integer = this.minItems.getOrElse(hints.minItems)
         val count = faker.number().numberBetween(min.intValue(), max.intValue() + 1)
         JArray(Range(1, count + 1).map(r =>
-          JsonFake.fake(allIts)
+          JsonFake.fake(allIts,hints)
         ).toList)
       }
       case _ => throw new IllegalArgumentException("ItemSchema or AllItemSchema should be supplied, not both")

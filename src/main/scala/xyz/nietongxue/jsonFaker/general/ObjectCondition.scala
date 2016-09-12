@@ -13,7 +13,7 @@ case class ObjectCondition[SCHEMA:FakeIt](schemas:Map[String,SCHEMA]) extends Co
   override def fake(hints: Hints): JValue = {
       JObject(schemas.map {
         case (name: String, s: SCHEMA) =>
-          (name, JsonFake.fake[SCHEMA](s)(implicitly[FakeIt[SCHEMA]]))
+          (name, JsonFake.fake[SCHEMA](s,hints)(implicitly[FakeIt[SCHEMA]]))
       }.toList)
 
   }

@@ -10,12 +10,11 @@ import xyz.nietongxue.jsonFaker.general.{FakeIt, Hints, JsonFakerImp}
   */
 object SchemaFakeIt extends FakeIt[Schema] {
 
-  import xyz.nietongxue.jsonFaker.schema.Conditions._
+  import Conditions._
 
   val faker = new Faker()
 
-  override def fake(schema: Schema): JValue = {
-    val hints = Hints()
+  override def fake(schema: Schema,hints: Hints): JValue = {
 
     schema match {
       case n: NumberSchema => JsonFakerImp.fake(n, hints)

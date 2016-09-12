@@ -9,8 +9,8 @@ import org.json4s.JsonAST.JValue
   */
 object JsonFake {
 
-  def fake[SCHEMA:FakeIt](t:SCHEMA):JValue = {
-    implicitly[FakeIt[SCHEMA]].fake(t)
+  def fake[SCHEMA:FakeIt](t:SCHEMA,hints: Hints):JValue = {
+    implicitly[FakeIt[SCHEMA]].fake(t,hints)
   }
 
 }
@@ -30,7 +30,7 @@ trait Condition {
 }
 
 trait FakeIt[SCHEMA]{
-  def fake(s:SCHEMA):JValue
+  def fake(s:SCHEMA,hints: Hints):JValue
 }
 
 
