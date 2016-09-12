@@ -7,6 +7,7 @@ import org.json4s.JsonDSL._
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import org.specs2.mutable._
+import xyz.nietongxue.jsonFaker.TestUtil
 import xyz.nietongxue.jsonFaker.general.{Hints, JsonFake}
 
 
