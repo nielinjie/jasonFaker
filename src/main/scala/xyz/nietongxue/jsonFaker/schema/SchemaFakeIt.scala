@@ -14,7 +14,7 @@ object SchemaFakeIt extends FakeIt[Schema] {
 
   val faker = new Faker()
 
-  override def fake(schema: Schema,hints: Hints): JValue = {
+  override def fake(schema: Schema, hints: Hints): JValue = {
 
     schema match {
       case n: NumberSchema => JsonFakerImp.fake(n, hints)
@@ -24,7 +24,7 @@ object SchemaFakeIt extends FakeIt[Schema] {
       case nl: NullSchema => JNull
       case c: CombinedSchema => JsonFakerImp.fake(c, hints)
       case b: BooleanSchema => JBool(faker.bool().bool())
-      //      case em: EnumSchema => em.fake(hints)
+      case em: EnumSchema => JsonFakerImp.fake(em, hints)
       case _ => ???
 
     }

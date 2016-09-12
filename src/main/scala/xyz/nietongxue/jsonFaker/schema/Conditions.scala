@@ -12,4 +12,5 @@ object Conditions {
   implicit val ocf:ConditionFinder[ObjectSchema]= ObjectCo
   implicit val acf:ConditionFinder[ArraySchema] = ArrayCo
   implicit  val ccf:ConditionFinder[CombinedSchema]=CombinedCo
+  implicit val ecf: ConditionFinder[EnumSchema] = EnumCo
 }

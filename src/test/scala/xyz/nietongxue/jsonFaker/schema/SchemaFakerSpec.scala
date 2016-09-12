@@ -36,9 +36,7 @@ class SchemaFakerSpec extends Specification {
     }
   }
   "fake" should {
-    val faker = JsonFake
-    implicit val fakeIt = SchemaFakeIt
-    val hints = Hints()
+
     "number fake" should {
       "integer fake" should {
         val s1: List[JValue] = List(
@@ -51,7 +49,7 @@ class SchemaFakerSpec extends Specification {
         val s2: List[JValue] = s1.map(s => s.merge("exclusiveMinimum" -> true: JValue))
         val s3: List[JValue] = s1.map(s => s.merge("exclusiveMaximum" -> true: JValue))
 
-        validate(s1 ::: s2 ::: s3, _.values.asInstanceOf[BigInt].toInt,"integer")
+        validate(s1 ::: s2 ::: s3, _.values.asInstanceOf[BigInt].toInt, "integer")
 
       }
       "double fake" should {
@@ -65,14 +63,17 @@ class SchemaFakerSpec extends Specification {
         val s2: List[JValue] = s1.map(s => s.merge("exclusiveMinimum" -> true: JValue))
         val s3: List[JValue] = s1.map(s => s.merge("exclusiveMaximum" -> true: JValue))
 
-        validate(s1 ::: s2 ::: s3, _.values.asInstanceOf[Double],"double")
+        validate(s1 ::: s2 ::: s3, _.values.asInstanceOf[Double], "double")
       }
-      "multipleOf" in {
-        val s = jValueToSchema(("type" -> "integer") ~ ("multipleOf" -> 10))
-        faker.fake(s,hints) must throwA[NotImplementedError]
-      }
+//      "multipleOf" in {
+//        val faker = JsonFake
+//        implicit val fakeIt = SchemaFakeIt
+//        val hints = Hints()
+//        val s = jValueToSchema(("type" -> "integer") ~ ("multipleOf" -> 10))
+//        faker.fake(s, hints) must throwA[NotImplementedError]
+//      }
     }
-
+    //
     "array fake" should {
       val array: (String, String) = "type" -> "array"
       val items = "items" -> ("type" -> "integer")
@@ -83,68 +84,73 @@ class SchemaFakerSpec extends Specification {
         array ~ items ~ ("minItems" -> 2) ~ ("maxItems" -> 5),
         array ~ items ~ ("minItems" -> 2) ~ ("maxItems" -> 2)
       )
-      validate(s1, jvToJSONArray,"all items")
+      validate(s1, TestUtil.jvToJSONArray, "all items")
       val s2: List[JValue] = List(
         array ~ ("items" -> JArray(List("type" -> "integer", "type" -> "number"))),
         array ~ ("items" -> JArray(List("type" -> "integer", array ~ items)))
       )
-      validate(s2, jvToJSONArray,"fix items")
+      validate(s2, TestUtil.jvToJSONArray, "fix items")
       val s3: List[JValue] = List(
         array ~ nestItems
       )
-      validate(s3, jvToJSONArray,"nested items")
+      validate(s3, TestUtil.jvToJSONArray, "nested items")
     }
 
+    //
     "string fake" should {
       val string: (String, String) = "type" -> "string"
 
       val s1: List[JValue] = List(
-        string ,
-        string  ~ ("minLength" -> 2),
-        string  ~ ("minLength" -> 2) ~ ("maxLength" -> 5),
-        string  ~ ("minLength" -> 2) ~ ("maxLength" -> 2)
+        string,
+        string ~ ("minLength" -> 2),
+        string ~ ("minLength" -> 2) ~ ("maxLength" -> 5),
+        string ~ ("minLength" -> 2) ~ ("maxLength" -> 2)
       )
-      validate(s1, _.values.asInstanceOf[String],"no pattern")
+      validate(s1, _.values.asInstanceOf[String], "no pattern")
       val s2: List[JValue] = List(
-        string  ~ ("pattern" -> """(\([0-9]{3}\))?[0-9]{3}-[0-9]{4}"""),
-        string  ~ ("pattern" -> """^(\([0-9]{3}\))?[0-9]{3}-[0-9]{4}$""")
+        string ~ ("pattern" -> """(\([0-9]{3}\))?[0-9]{3}-[0-9]{4}"""),
+        string ~ ("pattern" -> """^(\([0-9]{3}\))?[0-9]{3}-[0-9]{4}$""")
       )
-      validate(s2, _.values.asInstanceOf[String],"pattern")
+      validate(s2, _.values.asInstanceOf[String], "pattern")
       //TODO max/min length 如何覆盖或者不覆盖pattern
-//      val s3: List[JValue] = List(
-//        string  ~ ("pattern" -> """^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$""")~ ("maxLength" -> 5)
-//      )
-//      validate(s3, _.values.asInstanceOf[String],"pattern and max")
+      //      val s3: List[JValue] = List(
+      //        string  ~ ("pattern" -> """^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$""")~ ("maxLength" -> 5)
+      //      )
+      //      validate(s3, _.values.asInstanceOf[String],"pattern and max")
 
     }
+
 
     "object fake" should {
-      val ob = "type"->"object"
-      val stringProperty = "type"->"string"
-      val intProperty="type"->"integer"
-      val nestedP = ob ~ ("properties"->JObject("first"->stringProperty,"last"->intProperty))
-      val s1:List[JValue]=List(
-        ob ~ ("properties"->JObject("name"->stringProperty,"age"->intProperty))
+      val ob = "type" -> "object"
+      val stringProperty = "type" -> "string"
+      val intProperty = "type" -> "integer"
+      val nestedP = ob ~ ("properties" -> JObject("first" -> stringProperty, "last" -> intProperty))
+      val s1: List[JValue] = List(
+        ob ~ ("properties" -> JObject("name" -> stringProperty, "age" -> intProperty))
       )
-      validate(s1, jvToJSONObject,"object")
-      val s2:List[JValue]=List(
-        ob ~ ("properties"->JObject("name"->stringProperty,"age"->intProperty,"addr"-> nestedP))
+      validate(s1, TestUtil.jvToJSONObject, "object")
+      val s2: List[JValue] = List(
+        ob ~ ("properties" -> JObject("name" -> stringProperty, "age" -> intProperty, "addr" -> nestedP))
       )
-      validate(s2,jvToJSONObject,"nested object")
+      validate(s2, TestUtil.jvToJSONObject, "nested object")
+    }
+
+
+    "enu fake" should {
+      val s1: List[JValue] = List(
+        ("type" -> "string") ~ ("enum" -> JArray(List(JString("A"), JString("B"))))
+      )
+      validate(s1, _.values.asInstanceOf[String], "enum string")
+      val s2: List[JValue] = List(
+        ("type" -> "integer") ~ ("enum" -> JArray(List(JInt(1), JInt(2))))
+      )
+      validate(s2, _.values.asInstanceOf[BigInt].intValue(), "enum integer")
     }
   }
-  "enum fake" should {
-    val s1:List[JValue]=List(
-      ("type"->"string") ~ ("enum" -> JArray(List(JString("A"),JString("B"))))
-    )
-    validate(s1, _.values.asInstanceOf[String],"enum string")
-    val s2:List[JValue]=List(
-      ("type"->"integer") ~ ("enum" -> JArray(List(JInt(1),JInt(2))))
-    )
-    validate(s2, _.values.asInstanceOf[BigInt].intValue(),"enum integer")
-  }
 
-  def validate(schemas: List[JValue], validated: JValue => Any,message:String): Unit = {
+
+  def validate(schemas: List[JValue], validated: JValue => Any, message: String): Unit = {
     val l: Int = Integer.valueOf(System.getProperty("loop", "1")).intValue()
     val faker = JsonFake
     implicit val fakeIt = SchemaFakeIt
@@ -153,8 +159,8 @@ class SchemaFakerSpec extends Specification {
       schema =>
         Range(0, l).foreach {
           x =>
-            val jv = faker.fake(schema,hints)
-            s"validate - $message - ${jv.toString}"  in {
+            val jv = faker.fake(schema, hints)
+            s"validate - $message - ${jv.toString}" in {
               schema.validate(validated(jv))
               success
             }
@@ -162,17 +168,8 @@ class SchemaFakerSpec extends Specification {
     })
   }
 
-  def jvToJSONArray(ja: JValue): JSONArray = {
-    val jsonString: String = compact(render(ja))
-    new JSONArray(jsonString)
-  }
-
-  def jvToJSONObject(ja: JValue): JSONObject = {
-    val jsonString: String = compact(render(ja))
-    new JSONObject(jsonString)
-  }
 
   def jValueToSchema(sh: JValue): Schema = {
-    SchemaLoader.load(jvToJSONObject(sh))
+    SchemaLoader.load(TestUtil.jvToJSONObject(sh))
   }
 }
